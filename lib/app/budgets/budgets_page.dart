@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:monekin/app/budgets/budget_form_page.dart';
 import 'package:monekin/core/database/services/budget/budget_service.dart';
@@ -37,8 +39,7 @@ class BudgetsPage extends StatelessWidget {
                 )),
         body: TabBarView(children: [
           StreamBuilder(
-              stream: BudgetServive.instance
-                  .getBudgets(predicate: (p0) => p0.intervalPeriod.isNotNull()),
+              stream: BudgetServive.instance.getBudgets(predicate: (p0) => p0.intervalPeriod.isNotNull()),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Column(
@@ -51,10 +52,7 @@ class BudgetsPage extends StatelessWidget {
                 if (budgets.isEmpty) {
                   return Column(
                     children: [
-                      Expanded(
-                          child: NoResults(
-                              title: t.general.empty_warn,
-                              description: t.budgets.no_budgets)),
+                      Expanded(child: NoResults(title: t.general.empty_warn, description: t.budgets.no_budgets)),
                     ],
                   );
                 }
@@ -63,6 +61,7 @@ class BudgetsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     itemBuilder: (context, index) {
                       final budget = budgets[index];
+                      // log('budgetmessage ===========> ${budget}');
 
                       return BudgetCard(budget: budget);
                     },
@@ -72,8 +71,7 @@ class BudgetsPage extends StatelessWidget {
                     itemCount: budgets.length);
               }),
           StreamBuilder(
-              stream: BudgetServive.instance
-                  .getBudgets(predicate: (p0) => p0.intervalPeriod.isNull()),
+              stream: BudgetServive.instance.getBudgets(predicate: (p0) => p0.intervalPeriod.isNull()),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Column(
@@ -86,10 +84,7 @@ class BudgetsPage extends StatelessWidget {
                 if (budgets.isEmpty) {
                   return Column(
                     children: [
-                      Expanded(
-                          child: NoResults(
-                              title: t.general.empty_warn,
-                              description: t.budgets.no_budgets)),
+                      Expanded(child: NoResults(title: t.general.empty_warn, description: t.budgets.no_budgets)),
                     ],
                   );
                 }
@@ -98,7 +93,7 @@ class BudgetsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     itemBuilder: (context, index) {
                       final budget = budgets[index];
-
+                      // log('budgetmessage ===========> ${budget}');
                       return BudgetCard(budget: budget);
                     },
                     separatorBuilder: (context, index) {

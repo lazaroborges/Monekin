@@ -34,6 +34,7 @@ import 'package:monekin/i18n/translations.g.dart';
 
 import '../../core/models/transaction/transaction_type.enum.dart';
 import '../../core/presentation/app_colors.dart';
+import '../common/common_widget_and_methods.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -47,6 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void initState() {
+    getRequest();
     super.initState();
   }
 
@@ -56,19 +58,16 @@ class _DashboardPageState extends State<DashboardPage> {
 
     final accountService = AccountService.instance;
 
-    final hideDrawerAndFloatingButton =
-        BreakPoint.of(context).isLargerOrEqualTo(BreakpointID.md);
+    final hideDrawerAndFloatingButton = BreakPoint.of(context).isLargerOrEqualTo(BreakpointID.md);
 
     return Scaffold(
         appBar: EmptyAppBar(color: AppColors.of(context).light),
-        floatingActionButton:
-            hideDrawerAndFloatingButton ? null : const NewTransactionButton(),
+        floatingActionButton: hideDrawerAndFloatingButton ? null : const NewTransactionButton(),
         drawer: hideDrawerAndFloatingButton
             ? null
             : Drawer(
                 child: Builder(builder: (context) {
-                  final drawerItems = getDestinations(context,
-                      showHome: false, shortLabels: false);
+                  final drawerItems = getDestinations(context, showHome: false, shortLabels: false);
 
                   return HomeDrawer(
                     drawerActions: drawerItems,
@@ -84,8 +83,7 @@ class _DashboardPageState extends State<DashboardPage> {
         body: SingleChildScrollView(
             child: Column(children: [
           DefaultTextStyle.merge(
-            style:
-                TextStyle(color: Theme.of(context).appBarTheme.foregroundColor),
+            style: TextStyle(color: Theme.of(context).appBarTheme.foregroundColor),
             child: Card(
               margin: const EdgeInsets.only(bottom: 24),
               shape: const RoundedRectangleBorder(
@@ -118,14 +116,11 @@ class _DashboardPageState extends State<DashboardPage> {
                             padding: const EdgeInsets.all(8),
                             child: Row(
                               children: [
-                                if (BreakPoint.of(context)
-                                    .isSmallerThan(BreakpointID.md)) ...[
+                                if (BreakPoint.of(context).isSmallerThan(BreakpointID.md)) ...[
                                   StreamBuilder(
-                                      stream: UserSettingService.instance
-                                          .getSetting(SettingKey.avatar),
+                                      stream: UserSettingService.instance.getSetting(SettingKey.avatar),
                                       builder: (context, snapshot) {
-                                        return UserAvatar(
-                                            avatar: snapshot.data);
+                                        return UserAvatar(avatar: snapshot.data);
                                       }),
                                   const SizedBox(width: 8),
                                 ],
@@ -134,28 +129,20 @@ class _DashboardPageState extends State<DashboardPage> {
                                   children: [
                                     Text(
                                       'Bem-vindo!',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                             fontWeight: FontWeight.w300,
                                           ),
                                     ),
                                     StreamBuilder(
-                                        stream: UserSettingService.instance
-                                            .getSetting(SettingKey.userName),
+                                        stream: UserSettingService.instance.getSetting(SettingKey.userName),
                                         builder: (context, snapshot) {
                                           if (!snapshot.hasData) {
-                                            return const Skeleton(
-                                                width: 70, height: 12);
+                                            return const Skeleton(width: 70, height: 12);
                                           }
 
                                           return Text(
                                             snapshot.data!,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall!
-                                                .copyWith(
+                                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 18,
                                                 ),
@@ -169,8 +156,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         ActionChip(
                           label: Text(dateRangeService.getText(context)),
-                          backgroundColor:
-                              AppColors.of(context).primaryContainer,
+                          backgroundColor: AppColors.of(context).primaryContainer,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             side: BorderSide(
@@ -206,8 +192,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            totalBalanceIndicator(
-                                context, accounts, accountService),
+                            totalBalanceIndicator(context, accounts, accountService),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -242,9 +227,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
             child: ResponsiveRowColumn.withSymetricSpacing(
-              direction: BreakPoint.of(context).isLargerThan(BreakpointID.md)
-                  ? Axis.horizontal
-                  : Axis.vertical,
+              direction: BreakPoint.of(context).isLargerThan(BreakpointID.md) ? Axis.horizontal : Axis.vertical,
               rowCrossAxisAlignment: CrossAxisAlignment.start,
               spacing: 16,
               children: [
@@ -255,11 +238,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     children: [
                       CardWithHeader(
                         title: t.financial_health.display,
-                        onHeaderButtonClick: () => RouteUtils.pushRoute(
-                            context,
-                            StatsPage(
-                                dateRangeService: dateRangeService,
-                                initialIndex: 0)),
+                        onHeaderButtonClick: () => RouteUtils.pushRoute(context, StatsPage(dateRangeService: dateRangeService, initialIndex: 0)),
                         bodyPadding: const EdgeInsets.all(16),
                         body: StreamBuilder(
                           stream: FinanceHealthService().getHealthyValue(
@@ -275,22 +254,18 @@ class _DashboardPageState extends State<DashboardPage> {
 
                             final financeHealthData = snapshot.data!;
 
-                            return FinanceHealthMainInfo(
-                                financeHealthData: financeHealthData);
+                            return FinanceHealthMainInfo(financeHealthData: financeHealthData);
                           },
                         ),
                       ),
                       const SizedBox(height: 16),
                       CardWithHeader(
                           title: t.stats.by_categories,
-                          body: ChartByCategories(
-                              datePeriodState: dateRangeService),
+                          body: ChartByCategories(datePeriodState: dateRangeService),
                           onHeaderButtonClick: () {
                             RouteUtils.pushRoute(
                               context,
-                              StatsPage(
-                                  dateRangeService: dateRangeService,
-                                  initialIndex: 1),
+                              StatsPage(dateRangeService: dateRangeService, initialIndex: 1),
                             );
                           }),
                     ],
@@ -309,26 +284,20 @@ class _DashboardPageState extends State<DashboardPage> {
                           onHeaderButtonClick: () {
                             RouteUtils.pushRoute(
                               context,
-                              StatsPage(
-                                  dateRangeService: dateRangeService,
-                                  initialIndex: 2),
+                              StatsPage(dateRangeService: dateRangeService, initialIndex: 2),
                             );
                           }),
                       const SizedBox(height: 16),
                       CardWithHeader(
                           title: t.stats.cash_flow,
                           body: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 16, left: 16, right: 16),
-                            child: BalanceChartSmall(
-                                dateRangeService: dateRangeService),
+                            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                            child: BalanceChartSmall(dateRangeService: dateRangeService),
                           ),
                           onHeaderButtonClick: () {
                             RouteUtils.pushRoute(
                               context,
-                              StatsPage(
-                                  dateRangeService: dateRangeService,
-                                  initialIndex: 3),
+                              StatsPage(dateRangeService: dateRangeService, initialIndex: 3),
                             );
                           }),
                     ],
@@ -351,8 +320,7 @@ class _DashboardPageState extends State<DashboardPage> {
       delayTrackingAfterGoal: 4000,
       onClickGoalReached: () async {
         final sc = ScaffoldMessenger.of(context);
-        final privateMode =
-            await PrivateModeService.instance.privateModeStream.first;
+        final privateMode = await PrivateModeService.instance.privateModeStream.first;
 
         PrivateModeService.instance.setPrivateMode(!privateMode);
 
@@ -360,9 +328,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
         sc.showSnackBar(
           SnackBar(
-            content: Text(!privateMode
-                ? t.settings.security.private_mode_activated
-                : t.settings.security.private_mode_deactivated),
+            content: Text(!privateMode ? t.settings.security.private_mode_activated : t.settings.security.private_mode_deactivated),
           ),
         );
       },
@@ -380,8 +346,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
           if (accounts.hasData) ...[
             StreamBuilder(
-              stream: accountService.getAccountsMoney(
-                  accountIds: accounts.data!.map((e) => e.id)),
+              stream: accountService.getAccountsMoney(accountIds: accounts.data!.map((e) => e.id)),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return CurrencyDisplayer(
@@ -396,14 +361,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 return const Skeleton(width: 90, height: 40);
               },
             ),
-            if (dateRangeService.startDate != null &&
-                dateRangeService.endDate != null)
+            if (dateRangeService.startDate != null && dateRangeService.endDate != null)
               StreamBuilder(
                 stream: accountService.getAccountsMoneyVariation(
-                    accounts: accounts.data!,
-                    startDate: dateRangeService.startDate,
-                    endDate: dateRangeService.endDate,
-                    convertToPreferredCurrency: true),
+                    accounts: accounts.data!, startDate: dateRangeService.startDate, endDate: dateRangeService.endDate, convertToPreferredCurrency: true),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Skeleton(width: 52, height: 22);
@@ -434,8 +395,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     children: [
                       Text(
                         t.home.no_accounts,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -445,7 +405,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       const SizedBox(height: 8),
                       FilledButton(
                           onPressed: () => RouteUtils.pushRoute(
-                              context, const AccountFormPage()),
+                                context,
+                                const AccountFormPage(),
+                              ),
                           child: Text(t.account.form.create))
                     ],
                   ))
@@ -465,44 +427,29 @@ class _DashboardPageState extends State<DashboardPage> {
               final account = accounts[index];
 
               return ListTile(
-                onTap: () => RouteUtils.pushRoute(
-                    context,
-                    AccountDetailsPage(
-                        account: account,
-                        accountIconHeroTag:
-                            'dashboard-page__account-icon-${account.id}')),
-                leading: Hero(
-                    tag: 'dashboard-page__account-icon-${account.id}',
-                    child: account.displayIcon(context)),
-                trailing: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      StreamBuilder(
-                          initialData: 0.0,
-                          stream: AccountService.instance
-                              .getAccountMoney(account: account),
-                          builder: (context, snapshot) {
-                            return CurrencyDisplayer(
-                              amountToConvert: snapshot.data!,
-                              currency: account.currency,
-                            );
-                          }),
-                      StreamBuilder(
-                          initialData: 0.0,
-                          stream: AccountService.instance
-                              .getAccountsMoneyVariation(
-                                  accounts: [account],
-                                  startDate: dateRangeService.startDate,
-                                  endDate: dateRangeService.endDate,
-                                  convertToPreferredCurrency: false),
-                          builder: (context, snapshot) {
-                            return TrendingValue(
-                              percentage: snapshot.data!,
-                              decimalDigits: 0,
-                            );
-                          }),
-                    ]),
+                onTap: () => RouteUtils.pushRoute(context, AccountDetailsPage(account: account, accountIconHeroTag: 'dashboard-page__account-icon-${account.id}')),
+                leading: Hero(tag: 'dashboard-page__account-icon-${account.id}', child: account.displayIcon(context)),
+                trailing: Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.center, children: [
+                  StreamBuilder(
+                      initialData: 0.0,
+                      stream: AccountService.instance.getAccountMoney(account: account),
+                      builder: (context, snapshot) {
+                        return CurrencyDisplayer(
+                          amountToConvert: snapshot.data!,
+                          currency: account.currency,
+                        );
+                      }),
+                  StreamBuilder(
+                      initialData: 0.0,
+                      stream: AccountService.instance.getAccountsMoneyVariation(
+                          accounts: [account], startDate: dateRangeService.startDate, endDate: dateRangeService.endDate, convertToPreferredCurrency: false),
+                      builder: (context, snapshot) {
+                        return TrendingValue(
+                          percentage: snapshot.data!,
+                          decimalDigits: 0,
+                        );
+                      }),
+                ]),
                 title: Text(account.name),
               );
             });
@@ -547,8 +494,7 @@ class _HorizontalScrollableAccountList extends StatelessWidget {
                         context,
                         AccountDetailsPage(
                           account: account,
-                          accountIconHeroTag:
-                              'dashboard-page__account-icon-${account.id}',
+                          accountIconHeroTag: 'dashboard-page__account-icon-${account.id}',
                         ),
                       ),
                       bgColor: AppColors.of(context).light,
@@ -561,8 +507,7 @@ class _HorizontalScrollableAccountList extends StatelessWidget {
                             children: [
                               Row(children: [
                                 Hero(
-                                  tag:
-                                      'dashboard-page__account-icon-${account.id}',
+                                  tag: 'dashboard-page__account-icon-${account.id}',
                                   child: account.displayIcon(
                                     context,
                                     size: 28,
@@ -574,47 +519,36 @@ class _HorizontalScrollableAccountList extends StatelessWidget {
                                   children: [
                                     Text(
                                       account.name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(
+                                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                             fontWeight: FontWeight.bold,
                                           ),
                                     ),
                                     Text(
                                       account.type.title(context),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!,
+                                      style: Theme.of(context).textTheme.labelMedium!,
                                     )
                                   ],
                                 )
                               ]),
                               const Divider(height: 24),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   StreamBuilder(
                                       initialData: 0.0,
-                                      stream: AccountService.instance
-                                          .getAccountMoney(account: account),
+                                      stream: AccountService.instance.getAccountMoney(account: account),
                                       builder: (context, snapshot) {
                                         return CurrencyDisplayer(
                                           amountToConvert: snapshot.data!,
                                           currency: account.currency,
-                                          integerStyle: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge!
-                                              .copyWith(
+                                          integerStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
                                                 fontWeight: FontWeight.w600,
                                               ),
                                         );
                                       }),
                                   StreamBuilder(
                                       initialData: 0.0,
-                                      stream: AccountService.instance
-                                          .getAccountsMoneyVariation(
+                                      stream: AccountService.instance.getAccountsMoneyVariation(
                                         accounts: [account],
                                         startDate: dateRangeService.startDate,
                                         endDate: dateRangeService.endDate,
@@ -638,9 +572,14 @@ class _HorizontalScrollableAccountList extends StatelessWidget {
                 Opacity(
                   opacity: 0.6,
                   child: Tappable(
-                    //   bgColor: AppColors.of(context).light,
                     onTap: () {
-                      RouteUtils.pushRoute(context, const AccountFormPage());
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return commonCreateAccountDialog(context);
+                        },
+                      );
+                      // RouteUtils.pushRoute(context, const AccountFormPage());
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

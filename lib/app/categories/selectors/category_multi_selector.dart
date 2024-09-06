@@ -12,8 +12,7 @@ import 'package:monekin/core/presentation/widgets/modal_container.dart';
 import 'package:monekin/core/presentation/widgets/scrollable_with_bottom_gradient.dart';
 import 'package:monekin/i18n/translations.g.dart';
 
-Future<List<Category>?> showMultiCategoryListModal(
-    BuildContext context, CategoryMultiSelectorModal modal) {
+Future<List<Category>?> showMultiCategoryListModal(BuildContext context, CategoryMultiSelectorModal modal) {
   return showModalBottomSheet<List<Category>>(
     context: context,
     isScrollControlled: true,
@@ -31,12 +30,10 @@ class CategoryMultiSelectorModal extends StatefulWidget {
   final List<Category> selectedCategories;
 
   @override
-  State<CategoryMultiSelectorModal> createState() =>
-      _CategoryMultiSelectorModalState();
+  State<CategoryMultiSelectorModal> createState() => _CategoryMultiSelectorModalState();
 }
 
-class _CategoryMultiSelectorModalState
-    extends State<CategoryMultiSelectorModal> {
+class _CategoryMultiSelectorModalState extends State<CategoryMultiSelectorModal> {
   late List<Category> selectedCategories;
 
   String searchValue = '';
@@ -44,8 +41,7 @@ class _CategoryMultiSelectorModalState
   /// IDs of the category tiles that are expanded
   Set<String> expandedCategoriesTiles = {};
 
-  final DraggableScrollableController controller =
-      DraggableScrollableController();
+  final DraggableScrollableController controller = DraggableScrollableController();
 
   @override
   void initState() {
@@ -101,10 +97,7 @@ class _CategoryMultiSelectorModalState
                   );
                 },
           body: StreamBuilder(
-            stream: CategoryService.instance.getCategories(
-                predicate: (c, pc) =>
-                    c.name.contains(searchValue) |
-                    pc.name.contains(searchValue)),
+            stream: CategoryService.instance.getCategories(predicate: (c, pc) => c.name.contains(searchValue) | pc.name.contains(searchValue)),
             builder: (context, snapshot) {
               return Column(
                 children: [
@@ -131,23 +124,19 @@ class _CategoryMultiSelectorModalState
             },
           ),
           footer: BottomSheetFooter(
-            onSaved: selectedCategories.isNotEmpty
-                ? () => Navigator.of(context).pop(selectedCategories)
-                : null,
+            onSaved: selectedCategories.isNotEmpty ? () => Navigator.of(context).pop(selectedCategories) : null,
           ),
         );
       },
     );
   }
 
-  Widget buildCategoryTree(
-      AsyncSnapshot<List<Category>> snapshot, ScrollController sc) {
+  Widget buildCategoryTree(AsyncSnapshot<List<Category>> snapshot, ScrollController sc) {
     if (!snapshot.hasData) {
       return const LinearProgressIndicator();
     }
 
-    final allParentCategories =
-        snapshot.data!.where((c) => c.parentCategoryID.isNullOrEmpty);
+    final allParentCategories = snapshot.data!.where((c) => c.parentCategoryID.isNullOrEmpty);
 
     if (allParentCategories.isEmpty) {
       //TODO: Improve this messages in all the app
@@ -168,32 +157,25 @@ class _CategoryMultiSelectorModalState
             itemCount: allParentCategories.length,
             itemBuilder: (context, index) {
               final category = allParentCategories.elementAt(index);
-              final subcategories = snapshot.data!
-                  .where((cat) => cat.parentCategoryID == category.id);
+              final subcategories = snapshot.data!.where((cat) => cat.parentCategoryID == category.id);
 
               final subcategoriesAndMainCategory = [category, ...subcategories];
 
-              final selectedSubcategoriesInThisCat = selectedCategories.where(
-                  (sel) => subcategoriesAndMainCategory
-                      .map((e) => e.id)
-                      .contains(sel.id));
+              final selectedSubcategoriesInThisCat = selectedCategories.where((sel) => subcategoriesAndMainCategory.map((e) => e.id).contains(sel.id));
 
               return ExpansionTile(
                 onExpansionChanged: (value) {
                   if (value) {
                     expandedCategoriesTiles.add(category.id);
                   } else {
-                    expandedCategoriesTiles
-                        .removeWhere((e) => e == category.id);
+                    expandedCategoriesTiles.removeWhere((e) => e == category.id);
                   }
 
                   setState(() {});
                 },
-                leading:
-                    IconDisplayer.fromCategory(context, category: category),
+                leading: IconDisplayer.fromCategory(context, category: category),
                 trailing: Checkbox.adaptive(
-                  value: selectedSubcategoriesInThisCat.length ==
-                          subcategories.length + 1
+                  value: selectedSubcategoriesInThisCat.length == subcategories.length + 1
                       ? true
                       : selectedSubcategoriesInThisCat.isEmpty
                           ? false
@@ -203,10 +185,7 @@ class _CategoryMultiSelectorModalState
                     if (value == true) {
                       selectedCategories.addAll(subcategoriesAndMainCategory);
                     } else {
-                      selectedCategories.removeWhere((e) =>
-                          subcategoriesAndMainCategory
-                              .map((s) => s.id)
-                              .contains(e.id));
+                      selectedCategories.removeWhere((e) => subcategoriesAndMainCategory.map((s) => s.id).contains(e.id));
                     }
 
                     setState(() {});
@@ -219,9 +198,7 @@ class _CategoryMultiSelectorModalState
                     if (subcategories.isNotEmpty) ...[
                       const SizedBox(width: 6),
                       AnimatedRotation(
-                        turns: expandedCategoriesTiles.contains(category.id)
-                            ? 0.75
-                            : 0.25,
+                        turns: expandedCategoriesTiles.contains(category.id) ? 0.75 : 0.25,
                         duration: const Duration(milliseconds: 250),
                         child: const Icon(
                           Icons.arrow_forward_ios_rounded,
@@ -231,8 +208,7 @@ class _CategoryMultiSelectorModalState
                     ]
                   ],
                 ),
-                subtitle: Text(
-                    '${subcategories.length} ${t.categories.subcategories}'),
+                subtitle: Text('${subcategories.length} ${t.categories.subcategories}'),
                 children: [
                   buildSubcategoryCheckboxTile(context, category: category),
                   ...subcategories.map(
@@ -245,8 +221,7 @@ class _CategoryMultiSelectorModalState
               );
             },
           ),
-          ScrollableWithBottomGradient.buildPositionedGradient(
-              AppColors.of(context).modalBackground),
+          ScrollableWithBottomGradient.buildPositionedGradient(AppColors.of(context).modalBackground),
         ],
       ),
     );
@@ -260,9 +235,7 @@ class _CategoryMultiSelectorModalState
       padding: const EdgeInsets.only(left: 18),
       child: CheckboxListTile.adaptive(
         title: Text(
-          category.isMainCategory
-              ? '${t.categories.select.without_subcategory} - ${category.name}'
-              : category.name,
+          category.isMainCategory ? '${t.categories.select.without_subcategory} - ${category.name}' : category.name,
           softWrap: false,
           overflow: TextOverflow.ellipsis,
         ),
@@ -285,17 +258,10 @@ class _CategoryMultiSelectorModalState
   }
 
   Widget buildSelectAllButton(AsyncSnapshot<List<Category>> snapshot) {
-    final filteredSelectedCategories = snapshot.data == null
-        ? <Category>[]
-        : selectedCategories
-            .where(
-                (selAcc) => snapshot.data!.map((e) => e.id).contains(selAcc.id))
-            .toList();
+    final filteredSelectedCategories = snapshot.data == null ? <Category>[] : selectedCategories.where((selAcc) => snapshot.data!.map((e) => e.id).contains(selAcc.id)).toList();
 
     return CheckboxListTile(
-      value: snapshot.data == null ||
-              snapshot.data!.isEmpty ||
-              filteredSelectedCategories.isEmpty
+      value: snapshot.data == null || snapshot.data!.isEmpty || filteredSelectedCategories.isEmpty
           ? false
           : filteredSelectedCategories.length == snapshot.data!.length
               ? true
@@ -308,11 +274,9 @@ class _CategoryMultiSelectorModalState
       enabled: snapshot.hasData && snapshot.data!.isNotEmpty,
       onChanged: (value) {
         if (value == true && snapshot.data != null) {
-          selectedCategories.addAll(snapshot.data!.whereNot((e) =>
-              selectedCategories.map((selAcc) => selAcc.id).contains(e.id)));
+          selectedCategories.addAll(snapshot.data!.whereNot((e) => selectedCategories.map((selAcc) => selAcc.id).contains(e.id)));
         } else {
-          selectedCategories.removeWhere(
-              (selAcc) => snapshot.data!.map((e) => e.id).contains(selAcc.id));
+          selectedCategories.removeWhere((selAcc) => snapshot.data!.map((e) => e.id).contains(selAcc.id));
         }
 
         setState(() {});

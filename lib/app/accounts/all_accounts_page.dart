@@ -15,6 +15,7 @@ import 'package:monekin/i18n/translations.g.dart';
 
 import '../../core/presentation/widgets/no_results.dart';
 import '../../core/presentation/widgets/reorderable_drag_icon.dart';
+import '../common/common_widget_and_methods.dart';
 
 class AllAccountsPage extends StatefulWidget {
   const AllAccountsPage({super.key});
@@ -47,7 +48,15 @@ class _AllAccountsPageState extends State<AllAccountsPage> {
         heroTag: UniqueKey(),
         icon: const Icon(Icons.add_rounded),
         label: Text(t.account.form.create),
-        onPressed: () => RouteUtils.pushRoute(context, const AccountFormPage()),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return commonCreateAccountDialog(context);
+            },
+          );
+          // RouteUtils.pushRoute(context, const AccountFormPage());
+        },
       ),
       body: Column(
         children: [

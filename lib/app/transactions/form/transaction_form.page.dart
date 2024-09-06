@@ -97,6 +97,7 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
               limit: transactionType.isTransfer ? 2 : 1)
           .first
           .then((acc) {
+            // print("accaccaccaccaccacc =====> ${acc.length}");
         fromAccount = widget.fromAccount ?? acc[0];
 
         if (transactionType.isTransfer) {

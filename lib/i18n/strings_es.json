@@ -28,6 +28,7 @@
     "show-more-fields": "Show more fields",
     "show-less-fields": "Show less fields",
     "tap-to-search": "Toca para buscar",
+    "dummy-text": "texto ficticio",
     "CLIPBOARD": {
       "success": "{{x}} copiado al portapapeles",
       "error": "Error al copiar"

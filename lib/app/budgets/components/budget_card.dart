@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import 'package:monekin/app/budgets/budget_details_page.dart';
@@ -30,9 +32,7 @@ class BudgetCard extends StatelessWidget {
     final t = Translations.of(context);
 
     return Tappable(
-      margin: isHeader
-          ? const EdgeInsets.all(0)
-          : const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+      margin: isHeader ? const EdgeInsets.all(0) : const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       bgColor: AppColors.of(context).light.lighten(),
       shape: RoundedRectangleBorder(
         borderRadius: isHeader
@@ -42,10 +42,7 @@ class BudgetCard extends StatelessWidget {
               )
             : const BorderRadius.all(radius),
       ),
-      onTap: isHeader
-          ? null
-          : () =>
-              RouteUtils.pushRoute(context, BudgetDetailsPage(budget: budget)),
+      onTap: isHeader ? null : () => RouteUtils.pushRoute(context, BudgetDetailsPage(budget: budget)),
       child: Card(
           margin: const EdgeInsets.all(0),
           color: Colors.transparent,
@@ -56,10 +53,7 @@ class BudgetCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DefaultTextStyle(
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -72,8 +66,7 @@ class BudgetCard extends StatelessWidget {
                             }
 
                             return CurrencyDisplayer(
-                              amountToConvert:
-                                  budget.limitAmount - snapshot.data!,
+                              amountToConvert: budget.limitAmount - snapshot.data!,
                               showDecimals: false,
                             );
                           }),
@@ -82,6 +75,7 @@ class BudgetCard extends StatelessWidget {
                 ),
                 DefaultTextStyle(
                   style: const TextStyle(
+                    color: Colors.black,
                     fontWeight: FontWeight.w300,
                   ),
                   child: Row(
@@ -106,8 +100,7 @@ class BudgetCard extends StatelessWidget {
                 const SizedBox(height: 32),
                 Builder(builder: (context) {
                   const double barWidth = 16;
-                  final Color labelColor =
-                      Theme.of(context).colorScheme.tertiary;
+                  final Color labelColor = Theme.of(context).colorScheme.tertiary;
 
                   return LayoutBuilder(builder: (context, constraints) {
                     return Stack(
@@ -117,14 +110,14 @@ class BudgetCard extends StatelessWidget {
                           stream: budget.percentageAlreadyUsed,
                           builder: (context, snapshot) {
                             final budgetValue = snapshot.data;
-
+                            // log("budgetValuebudgetValuebudgetValuebudgetValue =====> ${budget.todayPercent}");
                             return AnimatedProgressBar(
                               width: barWidth,
                               radius: 24,
-                              value: budgetValue != null && budgetValue >= 1
-                                  ? 1
-                                  : budgetValue ?? 0,
-                              color: budgetValue != null && budgetValue >= 1
+                              value:
+                                  // 0.99,
+                                  budgetValue != null && budgetValue >= 1 ? 1 : budgetValue ?? 0,
+                              color: budgetValue != null && budgetValue >= 0.8
                                   ? AppColors.of(context).danger
                                   : null,
                             );
@@ -133,9 +126,7 @@ class BudgetCard extends StatelessWidget {
                         if (budget.isActiveBudget)
                           Positioned(
                             top: -4,
-                            left: constraints.maxWidth *
-                                budget.todayPercent /
-                                100,
+                            left: constraints.maxWidth * budget.todayPercent / 100,
                             child: Stack(
                               children: [
                                 Transform.translate(
@@ -153,19 +144,13 @@ class BudgetCard extends StatelessWidget {
                                         color: labelColor,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4),
+                                      padding: const EdgeInsets.symmetric(horizontal: 4),
                                       child: Text(
                                         t.general.today,
                                         softWrap: false,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelSmall!
-                                            .copyWith(
+                                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
                                               fontWeight: FontWeight.w300,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onTertiary,
+                                              color: Theme.of(context).colorScheme.onTertiary,
                                             ),
                                       ),
                                     ),
@@ -186,19 +171,15 @@ class BudgetCard extends StatelessWidget {
                     );
                   });
                 }),
-                if (isHeader &&
-                    budget.periodState.datePeriod.periodType ==
-                        PeriodType.cycle) ...[
+                if (isHeader && budget.periodState.datePeriod.periodType == PeriodType.cycle) ...[
                   const SizedBox(height: 6),
                   DefaultTextStyle(
                     style: Theme.of(context).textTheme.labelMedium!,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(DateFormat.yMMMd()
-                            .format(budget.currentDateRange.start)),
-                        Text(DateFormat.yMMMd()
-                            .format(budget.currentDateRange.end)),
+                        Text(DateFormat.yMMMd().format(budget.currentDateRange.start)),
+                        Text(DateFormat.yMMMd().format(budget.currentDateRange.end)),
                       ],
                     ),
                   ),
@@ -214,13 +195,10 @@ class BudgetCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        budget.isPastBudget
-                            ? '${budget.daysToTheEnd.abs()} ${t.budgets.since_expiration}'
-                            : '${budget.daysToTheStart} ${t.budgets.days_to_start}',
-                        style:
-                            Theme.of(context).textTheme.labelMedium!.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                ),
+                        budget.isPastBudget ? '${budget.daysToTheEnd.abs()} ${t.budgets.since_expiration}' : '${budget.daysToTheStart} ${t.budgets.days_to_start}',
+                        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                              fontWeight: FontWeight.w300,
+                            ),
                       )
                     ],
                   )
@@ -231,8 +209,7 @@ class BudgetCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       StreamBuilder(
-                        stream:
-                            CurrencyService.instance.getUserPreferredCurrency(),
+                        stream: CurrencyService.instance.getUserPreferredCurrency(),
                         builder: (context, snapshot) {
                           return StreamBuilder(
                               stream: budget.currentValue,
@@ -242,20 +219,13 @@ class BudgetCard extends StatelessWidget {
                                     dailyAmount: NumberFormat.currency(
                                       symbol: snapshot.data?.symbol ?? '',
                                       decimalDigits: 0,
-                                    ).format(((budget.limitAmount -
-                                                (budgetCurrentValue.data ??
-                                                    0)) >
-                                            0)
-                                        ? ((budget.limitAmount -
-                                                (budgetCurrentValue.data ??
-                                                    0)) /
-                                            budget.daysToTheEnd)
+                                    ).format(((budget.limitAmount - (budgetCurrentValue.data ?? 0)) > 0)
+                                        ? ((budget.limitAmount - (budgetCurrentValue.data ?? 0)) / budget.daysToTheEnd)
                                         : 0),
                                     remainingDays: budget.daysToTheEnd,
                                   ),
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w300),
+                                  style: const TextStyle(fontWeight: FontWeight.w300),
                                 );
                               });
                         },

@@ -28,6 +28,8 @@
     "show-more-fields": "Show more fields",
     "show-less-fields": "Show less fields",
     "tap-to-search": "Tap to search",
+    "dummy-text": "dummy text",
+
     "CLIPBOARD": {
       "success": "{{x}} copied to the clipboard",
       "error": "Error copying"
